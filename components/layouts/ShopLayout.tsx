@@ -3,7 +3,7 @@ import { FC } from 'react'
 import { Navbar } from '../ui'
 
 interface Props {
-  title?: string
+  title: string
   pageDescription: string
   imageFullUrl?: string
   children?: React.ReactNode

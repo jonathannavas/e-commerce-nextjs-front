@@ -1,4 +1,6 @@
-import { SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material'
+import SearchOutlined from '@mui/icons-material/SearchOutlined'
+import ShoppingCartOutlined from '@mui/icons-material/ShoppingCartOutlined'
+
 import {
   AppBar,
   Badge,
@@ -17,7 +19,7 @@ export const Navbar = () => {
         <NextLink href="/" passHref legacyBehavior>
           <Link display="flex" alignItems="center">
             <Typography variant="h6">Teslo |</Typography>
-            <Typography sx={{ ml: 0.5 }}>Shop |</Typography>
+            <Typography sx={{ ml: 0.5 }}>Shop </Typography>
           </Link>
         </NextLink>
         {/* todo flex */}

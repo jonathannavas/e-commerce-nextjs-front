@@ -8,6 +8,10 @@
 # testing
 /coverage
 
+# quitar configuraciones de mongo
+mongo/
+.env
+
 # next.js
 /.next/
 /out/

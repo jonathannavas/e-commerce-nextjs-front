@@ -1,9 +1,12 @@
 import { Typography } from '@mui/material'
 import { ShopLayout } from '../components/layouts'
 import { ProductList } from '../components/products'
-import { initialData } from '../database/products'
+import { SkeletonProducts } from '../components/ui'
+import { useProducts } from '../hooks'
 
-export default function Home() {
+export default function HomePage() {
+  const { products, isError, isLoading } = useProducts('/products')
+
   return (
     <ShopLayout
       title="E-commerce"
@@ -12,10 +15,10 @@ export default function Home() {
       <Typography variant="h1" component="h1">
         Tienda
       </Typography>
-      <Typography variant="h2" sx={{ mb: 2 }}>
+      <Typography variant="h2" sx={{ mb: 5 }}>
         Todos los productos
       </Typography>
-      <ProductList products={initialData.products as any} />
+      {isLoading ? <SkeletonProducts /> : <ProductList products={products} />}
     </ShopLayout>
   )
 }

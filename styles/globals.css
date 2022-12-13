@@ -1,24 +1,30 @@
-
 @keyframes fadeIn {
-  0% {opacity: 0;}
-  100% {opacity: 1;}
-} 
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 
 @-webkit-keyframes fadeIn {
-  0% {opacity: 0;}
-  100% {opacity: 1;}
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .fadeIn {
-  -webkit-animation-duration: 0.5s;
-  animation-duration: 0.5s;
+  -webkit-animation-duration: 0.3s;
+  animation-duration: 0.3s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
 
   -webkit-animation-name: fadeIn;
   animation-name: fadeIn;
 }
-
 
 .circular-btn {
   border-radius: 30px;
@@ -27,7 +33,6 @@
 .circular-btn:hover {
   background-color: #274494;
 }
-
 
 .summary-card {
   border: 1px solid rgba(0, 0, 0, 0.1);

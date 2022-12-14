@@ -1,3 +1,4 @@
+import MenuOutlined from '@mui/icons-material/MenuOutlined'
 import SearchOutlined from '@mui/icons-material/SearchOutlined'
 import ShoppingCartOutlined from '@mui/icons-material/ShoppingCartOutlined'
 
@@ -13,10 +14,14 @@ import {
 } from '@mui/material'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
+import { useContext } from 'react'
+import { UiContext } from '../../context'
 
 export const Navbar = () => {
   const router = useRouter()
   const { gender = '' } = router.query
+
+  const { toggleSideMenu } = useContext(UiContext)
 
   return (
     <AppBar>
@@ -69,7 +74,12 @@ export const Navbar = () => {
             </IconButton>
           </Link>
         </NextLink>
-        <Button>Menú</Button>
+        <IconButton
+          onClick={toggleSideMenu}
+          sx={{ marginLeft: { xs: 0, lg: 1 } }}
+        >
+          <MenuOutlined />
+        </IconButton>
       </Toolbar>
     </AppBar>
   )

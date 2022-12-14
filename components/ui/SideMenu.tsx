@@ -18,15 +18,28 @@ import {
   InputAdornment,
   List,
   ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
   ListSubheader,
 } from '@mui/material'
+import { useRouter } from 'next/router'
+import { useContext } from 'react'
+import { UiContext } from '../../context'
 
 export const SideMenu = () => {
+  const { isMenuOpen, toggleSideMenu } = useContext(UiContext)
+  const router = useRouter()
+
+  const handleNavigate = (toPath: string) => {
+    toggleSideMenu()
+    router.push(toPath)
+  }
+
   return (
     <Drawer
-      open={false}
+      open={isMenuOpen}
+      onClose={toggleSideMenu}
       anchor="right"
       sx={{ backdropFilter: 'blur(4px)', transition: 'all 0.5s ease-out' }}
     >
@@ -46,78 +59,93 @@ export const SideMenu = () => {
             />
           </ListItem>
 
-          <ListItem button>
+          <ListItemButton>
             <ListItemIcon>
               <AccountCircleOutlined />
             </ListItemIcon>
             <ListItemText primary={'Perfil'} />
-          </ListItem>
+          </ListItemButton>
 
-          <ListItem button>
+          <ListItemButton>
             <ListItemIcon>
               <ConfirmationNumberOutlined />
             </ListItemIcon>
             <ListItemText primary={'Mis Ordenes'} />
-          </ListItem>
+          </ListItemButton>
 
-          <ListItem button sx={{ display: { xs: '', sm: 'none' } }}>
+          <ListItemButton
+            sx={{ display: { xs: '', sm: 'none' } }}
+            onClick={() => {
+              handleNavigate('/category/men')
+            }}
+          >
             <ListItemIcon>
               <MaleOutlined />
             </ListItemIcon>
             <ListItemText primary={'Hombres'} />
-          </ListItem>
+          </ListItemButton>
 
-          <ListItem button sx={{ display: { xs: '', sm: 'none' } }}>
+          <ListItemButton
+            sx={{ display: { xs: '', sm: 'none' } }}
+            onClick={() => {
+              handleNavigate('/category/women')
+            }}
+          >
             <ListItemIcon>
               <FemaleOutlined />
             </ListItemIcon>
             <ListItemText primary={'Mujeres'} />
-          </ListItem>
+          </ListItemButton>
 
-          <ListItem button sx={{ display: { xs: '', sm: 'none' } }}>
+          <ListItemButton
+            sx={{ display: { xs: '', sm: 'none' } }}
+            onClick={() => {
+              handleNavigate('/category/kid')
+            }}
+          >
             <ListItemIcon>
               <EscalatorWarningOutlined />
             </ListItemIcon>
             <ListItemText primary={'Niños'} />
-          </ListItem>
+          </ListItemButton>
 
-          <ListItem button>
+          <ListItemButton>
             <ListItemIcon>
               <VpnKeyOutlined />
             </ListItemIcon>
             <ListItemText primary={'Ingresar'} />
-          </ListItem>
+          </ListItemButton>
 
-          <ListItem button>
+          <ListItemButton>
             <ListItemIcon>
               <LoginOutlined />
             </ListItemIcon>
             <ListItemText primary={'Salir'} />
-          </ListItem>
+          </ListItemButton>
 
           {/* Admin */}
           <Divider />
           <ListSubheader>Admin Panel</ListSubheader>
 
-          <ListItem button>
+          <ListItemButton>
             <ListItemIcon>
               <CategoryOutlined />
             </ListItemIcon>
             <ListItemText primary={'Productos'} />
-          </ListItem>
-          <ListItem button>
+          </ListItemButton>
+          <ListItemButton>
             <ListItemIcon>
               <ConfirmationNumberOutlined />
             </ListItemIcon>
             <ListItemText primary={'Ordenes'} />
-          </ListItem>
+          </ListItemButton>
 
-          <ListItem button>
+          <ListItemButton>
             <ListItemIcon>
               <AdminPanelSettings />
             </ListItemIcon>
             <ListItemText primary={'Usuarios'} />
-          </ListItem>
+          </ListItemButton>
         </List>
       </Box>
     </Drawer>

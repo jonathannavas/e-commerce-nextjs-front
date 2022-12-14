@@ -9,7 +9,7 @@ export default function HomePage() {
 
   return (
     <ShopLayout
-      title="E-commerce"
+      title="Teslo-Shop - Ecommerce"
       pageDescription={'Encuentra los mejores productos aqui'}
     >
       <Typography variant="h1" component="h1">

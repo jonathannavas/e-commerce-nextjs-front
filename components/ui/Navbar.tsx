@@ -12,7 +12,12 @@ import {
   Typography,
 } from '@mui/material'
 import NextLink from 'next/link'
+import { useRouter } from 'next/router'
+
 export const Navbar = () => {
+  const router = useRouter()
+  const { gender = '' } = router.query
+
   return (
     <AppBar>
       <Toolbar>
@@ -28,17 +33,23 @@ export const Navbar = () => {
         <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
           <NextLink href="/category/men" passHref legacyBehavior>
             <Link>
-              <Button>Hombres</Button>
+              <Button color={`${gender === 'men' ? 'primary' : 'info'}`}>
+                Hombres
+              </Button>
             </Link>
           </NextLink>
           <NextLink href="/category/women" passHref legacyBehavior>
             <Link>
-              <Button>Mujeres</Button>
+              <Button color={`${gender === 'women' ? 'primary' : 'info'}`}>
+                Mujeres
+              </Button>
             </Link>
           </NextLink>
           <NextLink href="/category/kid" passHref legacyBehavior>
             <Link>
-              <Button>Niños</Button>
+              <Button color={`${gender === 'kid' ? 'primary' : 'info'}`}>
+                Niños
+              </Button>
             </Link>
           </NextLink>
         </Box>

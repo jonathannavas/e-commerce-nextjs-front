@@ -24,17 +24,35 @@ import {
   ListSubheader,
 } from '@mui/material'
 import { useRouter } from 'next/router'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { UiContext } from '../../context'
 
 export const SideMenu = () => {
   const { isMenuOpen, toggleSideMenu } = useContext(UiContext)
   const router = useRouter()
 
+  const [searchTerm, setSearchTerm] = useState('')
+
   const handleNavigate = (toPath: string) => {
     toggleSideMenu()
     router.push(toPath)
   }
+
+  const handleSearch = () => {
+    if (searchTerm.trim().length === 0) return
+    handleNavigate(`/search/${searchTerm.toLowerCase()}`)
+    setSearchTerm('')
+  }
+
+  const textFieldInputFocus = (inputRef: any) => {
+    if (inputRef && inputRef.node !== null) {
+      setTimeout(() => {
+        inputRef.focus()
+      }, 100)
+    }
+    return inputRef
+  }
+  let textFieldProps = { inputRef: textFieldInputFocus }
 
   return (
     <Drawer
@@ -47,11 +65,20 @@ export const SideMenu = () => {
         <List>
           <ListItem>
             <Input
+              {...textFieldProps}
+              autoFocus
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={(e) => (e.key === 'Enter' ? handleSearch() : null)}
               type="text"
               placeholder="Buscar..."
               endAdornment={
                 <InputAdornment position="end">
-                  <IconButton aria-label="toggle password visibility">
+                  <IconButton
+                    onClick={() => {
+                      handleSearch()
+                    }}
+                  >
                     <SearchOutlined />
                   </IconButton>
                 </InputAdornment>

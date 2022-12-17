@@ -5,10 +5,18 @@ import { CartContext, cartReducer } from './'
 
 export interface CartState {
   cart: ICartProduct[]
+  itemsCount: number
+  subTotal: number
+  tax: number
+  total: number
 }
 
 const CART_INITIAL_STATE: CartState = {
   cart: Cookie.get('cart') ? JSON.parse(Cookie.get('cart')!) : [],
+  itemsCount: 0,
+  subTotal: 0,
+  tax: 0,
+  total: 0,
 }
 
 export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -33,6 +41,27 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     Cookie.set('cart', JSON.stringify(state.cart))
+  }, [state.cart])
+
+  useEffect(() => {
+    const itemsCount = state.cart.reduce(
+      (prev, current: ICartProduct) => current.quantity + prev,
+      0
+    )
+    const subTotal = state.cart.reduce(
+      (prev, current: ICartProduct) => current.price * current.quantity + prev,
+      0
+    )
+
+    const taxRate: number = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0)
+
+    const orderSummary = {
+      itemsCount,
+      subTotal,
+      tax: subTotal * taxRate,
+      total: subTotal * (taxRate + 1),
+    }
+    dispatch({ type: '[Cart] - Update Order Sumary', payload: orderSummary })
   }, [state.cart])
 
   const addProductToCart = (product: ICartProduct) => {

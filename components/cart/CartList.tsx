@@ -8,10 +8,10 @@ import {
   Typography,
 } from '@mui/material'
 import NextLink from 'next/link'
-import { useRouter } from 'next/router'
 import { FC, useContext, useEffect, useState } from 'react'
 import { CartContext } from '../../context'
 import { ICartProduct } from '../../interfaces'
+import { currency } from '../../utils'
 import { ItemCounter } from '../ui'
 
 interface Props {
@@ -21,12 +21,6 @@ interface Props {
 export const CartList: FC<Props> = ({ editable = false }) => {
   const { cart, updateCartProductQuantity, removeCartProduct } =
     useContext(CartContext)
-
-  const router = useRouter()
-  if (cart.length === 0 && typeof window !== 'undefined') {
-    router.push('/cart/empty')
-    return null
-  }
 
   const [hasMounted, setHasMounted] = useState(false)
   useEffect(() => {
@@ -110,7 +104,9 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                 alignItems="center"
                 flexDirection="column"
               >
-                <Typography variant="subtitle1">${product.price}</Typography>
+                <Typography variant="subtitle1">
+                  {currency.format(product.price)}
+                </Typography>
                 {editable && (
                   <Button
                     variant="text"

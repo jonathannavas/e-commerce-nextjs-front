@@ -18,13 +18,14 @@ import {
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useContext, useState } from 'react'
-import { UiContext } from '../../context'
+import { CartContext, UiContext } from '../../context'
 
 export const Navbar = () => {
   const router = useRouter()
   const { gender = '' } = router.query
 
   const { toggleSideMenu } = useContext(UiContext)
+  const { itemsCount } = useContext(CartContext)
   const [searchTerm, setSearchTerm] = useState('')
   const [isSearchVisible, setIsSearchVisible] = useState(false)
 
@@ -126,7 +127,10 @@ export const Navbar = () => {
         <NextLink href="/cart" passHref legacyBehavior>
           <Link>
             <IconButton>
-              <Badge badgeContent={2} color="secondary">
+              <Badge
+                badgeContent={itemsCount > 9 ? '+9' : itemsCount}
+                color="secondary"
+              >
                 <ShoppingCartOutlined />
               </Badge>
             </IconButton>

@@ -3,6 +3,7 @@ import {
   Card,
   CardActionArea,
   CardMedia,
+  Chip,
   Grid,
   Link,
   Typography,
@@ -46,6 +47,18 @@ export const ProductCard: FC<Props> = ({ product }: Props) => {
         >
           <Link>
             <CardActionArea>
+              {product.inStock <= 0 && (
+                <Chip
+                  color="warning"
+                  label="Próximamente"
+                  sx={{
+                    position: 'absolute',
+                    zIndex: 99,
+                    top: '10px',
+                    right: '10px',
+                  }}
+                />
+              )}
               <CardMedia
                 component="img"
                 className="fadeIn"

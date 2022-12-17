@@ -23,7 +23,7 @@ export const CartList: FC<Props> = ({ editable = false }) => {
     useContext(CartContext)
 
   const router = useRouter()
-  if (cart.length === 0) {
+  if (cart.length === 0 && typeof window !== 'undefined') {
     router.push('/cart/empty')
     return null
   }

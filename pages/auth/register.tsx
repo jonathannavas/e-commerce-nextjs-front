@@ -5,7 +5,7 @@ import {
   Grid,
   Link,
   TextField,
-  Typography,
+  Typography
 } from '@mui/material'
 
 import ErrorOutline from '@mui/icons-material/ErrorOutline'
@@ -39,6 +39,7 @@ const RegisterPage = () => {
 
   const onRegisterForm = async ({ email, password, name }: FormData) => {
     setShowError(false)
+    
     const resp = await handleRegisterUser(name, email, password)
 
     if (resp.hasError) {
@@ -50,7 +51,9 @@ const RegisterPage = () => {
       return
     }
 
-    router.replace('/')
+    const destination = router.query.p?.toString() || '/'
+
+    router.replace(destination)
   }
 
   return (
@@ -139,7 +142,15 @@ const RegisterPage = () => {
               </Button>
             </Grid>
             <Grid item xs={12} display="flex" justifyContent="end">
-              <NextLink href="/auth/login" passHref legacyBehavior>
+              <NextLink
+                href={
+                  router.query.p
+                    ? `/auth/login?p=${router.query.p}`
+                    : '/auth/login'
+                }
+                passHref
+                legacyBehavior
+              >
                 <Link underline="always">Ya tienes una cuenta?</Link>
               </NextLink>
             </Grid>

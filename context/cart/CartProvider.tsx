@@ -57,7 +57,7 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     if (Cookie.get('userAddress')) {
       const shippingAddress: ShippingAddress = JSON.parse(
-        Cookie.get('userAddress') || 'undefined'
+        Cookie.get('userAddress') || '[]'
       )
 
       dispatch({

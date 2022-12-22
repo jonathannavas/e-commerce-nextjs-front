@@ -36,7 +36,7 @@ const getAddressInfo = (): FormData => {
     country,
     phone,
     address2,
-  }: FormData = JSON.parse(Cookies.get('userAddress') || 'undefined')
+  }: FormData = JSON.parse(Cookies.get('userAddress') || '[]')
 
   return {
     firstName,
@@ -154,12 +154,16 @@ const AddressPage = () => {
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <TextField
-                key={shippingAddress.country || countries[0].code}
+                key={
+                  shippingAddress && shippingAddress.country
+                    ? shippingAddress.country
+                    : countries[0].code
+                }
                 select
                 variant="filled"
                 label="Pais"
                 defaultValue={
-                  shippingAddress.country
+                  shippingAddress && shippingAddress.country
                     ? shippingAddress.country
                     : countries[0].code
                 }

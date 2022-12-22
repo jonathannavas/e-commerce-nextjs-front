@@ -13,7 +13,7 @@ interface ContextProps {
   tax: number
   total: number
 
-  shippingAddress: ShippingAddress | undefined
+  shippingAddress?: ShippingAddress
   updateAddress: (address: ShippingAddress) => void
 }
 

@@ -11,15 +11,31 @@ import {
 import { CartList, OrderSummary } from '../../components/cart'
 import { ShopLayout } from '../../components/layouts'
 
+import Cookies from 'js-cookie'
 import NextLink from 'next/link'
-import { useContext } from 'react'
+import { useRouter } from 'next/router'
+import { useContext, useEffect } from 'react'
 import { CartContext } from '../../context/cart/CartContext'
 import { countries } from '../../utils'
 
 const SummaryPage = () => {
-  const { shippingAddress, itemsCount } = useContext(CartContext)
+  const { shippingAddress, itemsCount, isLoaded, cart } =
+    useContext(CartContext)
+  const router = useRouter()
 
-  if (!shippingAddress) {
+  useEffect(() => {
+    if (isLoaded && cart.length === 0) {
+      router.replace('/cart/empty')
+    }
+  }, [isLoaded, cart, router])
+
+  useEffect(() => {
+    if (!Cookies.get('userAddress')) {
+      router.push('/checkout/address')
+    }
+  }, [router])
+
+  if (!shippingAddress || !isLoaded || cart.length === 0) {
     return <></>
   }
 

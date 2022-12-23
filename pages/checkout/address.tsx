@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { ShopLayout } from '../../components/layouts/ShopLayout'
 import { CartContext } from '../../context'
@@ -57,14 +57,20 @@ const AddressPage = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FormData>({
     defaultValues: getAddressInfo(),
   })
+
+  useEffect(() => {
+    reset(getAddressInfo())
+  }, [reset])
 
   const onHandleForm = (data: FormData) => {
     updateAddress(data)
     router.push('/checkout/summary')
   }
+
   return (
     <ShopLayout
       title={'Dirección'}

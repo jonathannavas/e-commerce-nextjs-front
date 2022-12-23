@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { FC, PropsWithChildren, useEffect, useReducer } from 'react'
 import { tesloApi } from '../../api'
@@ -20,24 +21,32 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE)
   const router = useRouter()
 
+  const { data, status } = useSession()
   useEffect(() => {
-    checkToken()
-  }, [])
-
-  const checkToken = async () => {
-    if (!Cookies.get('token')) {
-      return
+    if (status === 'authenticated') {
+      console.log({ user: data.user })
+      dispatch({ type: '[Auth] - Login', payload: data?.user as IUser })
     }
+  }, [status, data])
 
-    try {
-      const { data } = await tesloApi.post('/user/validate-token')
-      const { token, user } = data
-      Cookies.set('token', token)
-      dispatch({ type: '[Auth] - Login', payload: user })
-    } catch (error) {
-      Cookies.remove('token')
-    }
-  }
+  // useEffect(() => {
+  //   checkToken()
+  // }, [])
+
+  // const checkToken = async () => {
+  //   if (!Cookies.get('token')) {
+  //     return
+  //   }
+
+  //   try {
+  //     const { data } = await tesloApi.post('/user/validate-token')
+  //     const { token, user } = data
+  //     Cookies.set('token', token)
+  //     dispatch({ type: '[Auth] - Login', payload: user })
+  //   } catch (error) {
+  //     Cookies.remove('token')
+  //   }
+  // }
 
   const handleLogin = async (
     email: string,
@@ -86,9 +95,11 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   }
 
   const logout = () => {
-    Cookies.remove('token')
     Cookies.remove('cart')
-    router.reload()
+    Cookies.remove('userAddress')
+    signOut()
+    // Cookies.remove('token')
+    // router.reload()
   }
 
   return (

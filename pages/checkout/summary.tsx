@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   CardContent,
+  Chip,
   Divider,
   Grid,
   Link,
@@ -14,14 +15,16 @@ import { ShopLayout } from '../../components/layouts'
 import Cookies from 'js-cookie'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { CartContext } from '../../context/cart/CartContext'
 import { countries } from '../../utils'
 
 const SummaryPage = () => {
-  const { shippingAddress, itemsCount, isLoaded, cart } =
+  const { shippingAddress, itemsCount, isLoaded, cart, createOrder } =
     useContext(CartContext)
   const router = useRouter()
+  const [isPosting, setIsPosting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('sdasd')
 
   useEffect(() => {
     if (isLoaded && cart.length === 0) {
@@ -49,6 +52,11 @@ const SummaryPage = () => {
     zip,
     country,
   } = shippingAddress
+
+  const onCreateOrder = () => {
+    setIsPosting(true)
+    createOrder()
+  }
 
   return (
     <ShopLayout title="Resumen de Orden" pageDescription="Resumen de la orden">
@@ -98,10 +106,17 @@ const SummaryPage = () => {
 
               <OrderSummary />
 
-              <Box sx={{ mt: 3 }}>
-                <Button color="secondary" className="circular-btn" fullWidth>
+              <Box sx={{ mt: 3 }} display="flex" flexDirection="column">
+                <Button
+                  color="secondary"
+                  className="circular-btn"
+                  fullWidth
+                  onClick={onCreateOrder}
+                  disabled={isPosting}
+                >
                   Confirmar Orden
                 </Button>
+                {errorMessage && <Chip color="error" label={errorMessage} />}
               </Box>
             </CardContent>
           </Card>

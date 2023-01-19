@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   CardContent,
+  Chip,
   Divider,
   Grid,
   Link,
@@ -11,15 +12,33 @@ import {
 import { CartList, OrderSummary } from '../../components/cart'
 import { ShopLayout } from '../../components/layouts'
 
+import Cookies from 'js-cookie'
 import NextLink from 'next/link'
-import { useContext } from 'react'
+import { useRouter } from 'next/router'
+import { useContext, useEffect, useState } from 'react'
 import { CartContext } from '../../context/cart/CartContext'
 import { countries } from '../../utils'
 
 const SummaryPage = () => {
-  const { shippingAddress, itemsCount } = useContext(CartContext)
+  const { shippingAddress, itemsCount, isLoaded, cart, createOrder } =
+    useContext(CartContext)
+  const router = useRouter()
+  const [isPosting, setIsPosting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('sdasd')
 
-  if (!shippingAddress) {
+  useEffect(() => {
+    if (isLoaded && cart.length === 0) {
+      router.replace('/cart/empty')
+    }
+  }, [isLoaded, cart, router])
+
+  useEffect(() => {
+    if (!Cookies.get('userAddress')) {
+      router.push('/checkout/address')
+    }
+  }, [router])
+
+  if (!shippingAddress || !isLoaded || cart.length === 0) {
     return <></>
   }
 
@@ -33,6 +52,11 @@ const SummaryPage = () => {
     zip,
     country,
   } = shippingAddress
+
+  const onCreateOrder = () => {
+    setIsPosting(true)
+    createOrder()
+  }
 
   return (
     <ShopLayout title="Resumen de Orden" pageDescription="Resumen de la orden">
@@ -82,10 +106,17 @@ const SummaryPage = () => {
 
               <OrderSummary />
 
-              <Box sx={{ mt: 3 }}>
-                <Button color="secondary" className="circular-btn" fullWidth>
+              <Box sx={{ mt: 3 }} display="flex" flexDirection="column">
+                <Button
+                  color="secondary"
+                  className="circular-btn"
+                  fullWidth
+                  onClick={onCreateOrder}
+                  disabled={isPosting}
+                >
                   Confirmar Orden
                 </Button>
+                {errorMessage && <Chip color="error" label={errorMessage} />}
               </Box>
             </CardContent>
           </Card>

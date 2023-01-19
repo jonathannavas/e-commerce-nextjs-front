@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Chip,
+  Divider,
   Grid,
   Link,
   TextField,
@@ -10,12 +11,15 @@ import {
 } from '@mui/material'
 import { AuthLayout } from '../../components/layouts'
 
+import { getProviders, getSession, signIn } from 'next-auth/react'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AuthContext } from '../../context'
 import { validators } from '../../utils'
+
+import { GetServerSideProps } from 'next'
 
 type FormData = {
   email: string
@@ -34,21 +38,32 @@ const LoginPage = () => {
   } = useForm<FormData>()
 
   const [showError, setShowError] = useState(false)
+  const [providers, setProviders] = useState<any>({})
+
+  useEffect(() => {
+    getProviders().then((prov) => {
+      setProviders(prov)
+    })
+  }, [])
 
   const onHandleLogin = async ({ email, password }: FormData) => {
     setShowError(false)
-    const isValidLogin = await handleLogin(email, password)
-    if (!isValidLogin) {
-      setShowError(true)
-      setTimeout(() => {
-        setShowError(false)
-      }, 3000)
-      return
-    }
 
-    // return to path before login prev
-    const destination = router.query.p?.toString() || '/'
-    router.replace(destination)
+    // autenticacion personalizada
+
+    // const isValidLogin = await handleLogin(email, password)
+    // if (!isValidLogin) {
+    //   setShowError(true)
+    //   setTimeout(() => {
+    //     setShowError(false)
+    //   }, 3000)
+    //   return
+    // }
+
+    // // return to path before login prev
+    // const destination = router.query.p?.toString() || '/'
+    // router.replace(destination)
+    await signIn('credentials', { email, password })
   }
 
   return (
@@ -132,11 +147,56 @@ const LoginPage = () => {
                 <Link underline="always">No tienes cuenta?</Link>
               </NextLink>
             </Grid>
+
+            <Grid
+              item
+              xs={12}
+              display="flex"
+              justifyContent="end"
+              flexDirection="column"
+            >
+              <Divider sx={{ width: '100%', mb: 2 }} />
+              {Object.values(providers).map((prov: any) => {
+                if (prov.id === 'credentials')
+                  return <div key="credentials"></div>
+                return (
+                  <Button
+                    key={prov.id}
+                    variant="outlined"
+                    fullWidth
+                    color="primary"
+                    sx={{ mb: 1 }}
+                    onClick={() => signIn(prov.id)}
+                  >
+                    {prov.name}
+                  </Button>
+                )
+              })}
+            </Grid>
           </Grid>
         </Box>
       </form>
     </AuthLayout>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query,
+}) => {
+  const session = await getSession({ req })
+  const { p = '/' } = query
+  if (session) {
+    return {
+      redirect: {
+        destination: p.toString(),
+        permanent: false,
+      },
+    }
+  }
+  return {
+    props: {},
+  }
 }
 
 export default LoginPage

@@ -10,15 +10,16 @@ import {
 import NextLink from 'next/link'
 import { FC, useContext, useEffect, useState } from 'react'
 import { CartContext } from '../../context'
-import { ICartProduct } from '../../interfaces'
+import { ICartProduct, IOrderItem } from '../../interfaces'
 import { currency } from '../../utils'
 import { ItemCounter } from '../ui'
 
 interface Props {
   editable?: boolean
+  products?: IOrderItem[]
 }
 
-export const CartList: FC<Props> = ({ editable = false }) => {
+export const CartList: FC<Props> = ({ editable = false, products }) => {
   const { cart, updateCartProductQuantity, removeCartProduct } =
     useContext(CartContext)
 
@@ -26,6 +27,8 @@ export const CartList: FC<Props> = ({ editable = false }) => {
   useEffect(() => {
     setHasMounted(true)
   }, [])
+
+  const productsToShow = products ? products : cart
 
   const onNewCartQuantityValue = (
     product: ICartProduct,
@@ -37,7 +40,7 @@ export const CartList: FC<Props> = ({ editable = false }) => {
   return (
     <>
       {hasMounted &&
-        cart.map((product: ICartProduct) => {
+        productsToShow.map((product) => {
           return (
             <Grid
               container
@@ -83,7 +86,7 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                       currentValue={product.quantity}
                       maxValue={10}
                       updatedQuantity={(value) =>
-                        onNewCartQuantityValue(product, value)
+                        onNewCartQuantityValue(product as ICartProduct, value)
                       }
                     />
                   ) : (
@@ -111,7 +114,7 @@ export const CartList: FC<Props> = ({ editable = false }) => {
                   <Button
                     variant="text"
                     color="error"
-                    onClick={() => removeCartProduct(product)}
+                    onClick={() => removeCartProduct(product as ICartProduct)}
                   >
                     Remover
                   </Button>

@@ -24,7 +24,7 @@ const SummaryPage = () => {
     useContext(CartContext)
   const router = useRouter()
   const [isPosting, setIsPosting] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('sdasd')
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     if (isLoaded && cart.length === 0) {
@@ -53,9 +53,15 @@ const SummaryPage = () => {
     country,
   } = shippingAddress
 
-  const onCreateOrder = () => {
+  const onCreateOrder = async () => {
     setIsPosting(true)
-    createOrder()
+    const { message, hasError } = await createOrder()
+    if (hasError) {
+      setIsPosting(false)
+      setErrorMessage(message)
+      return
+    }
+    router.replace(`/orders/${message}`)
   }
 
   return (
@@ -116,7 +122,9 @@ const SummaryPage = () => {
                 >
                   Confirmar Orden
                 </Button>
-                {errorMessage && <Chip color="error" label={errorMessage} />}
+                {errorMessage && (
+                  <Chip color="error" label={errorMessage} sx={{ mt: 2 }} />
+                )}
               </Box>
             </CardContent>
           </Card>

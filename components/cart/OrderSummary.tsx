@@ -1,10 +1,23 @@
 import { Grid, Typography } from '@mui/material'
-import { useContext } from 'react'
+import { FC, useContext } from 'react'
 import { CartContext } from '../../context/'
 import { currency } from '../../utils'
 
-export const OrderSummary = () => {
+interface Props {
+  orderValues?: {
+    itemsCount: number
+    subTotal: number
+    tax: number
+    total: number
+  }
+}
+
+export const OrderSummary: FC<Props> = ({ orderValues }: Props) => {
   const { itemsCount, subTotal, tax, total } = useContext(CartContext)
+
+  const summaryValues = orderValues
+    ? orderValues
+    : { itemsCount, subTotal, tax, total }
 
   return (
     <Grid container>
@@ -13,7 +26,8 @@ export const OrderSummary = () => {
       </Grid>
       <Grid item xs={6} display="flex" justifyContent="flex-end">
         <Typography>
-          {itemsCount} producto{itemsCount > 0 ? 's' : ''}
+          {summaryValues.itemsCount} producto
+          {summaryValues.itemsCount > 0 ? 's' : ''}
         </Typography>
       </Grid>
 
@@ -21,7 +35,7 @@ export const OrderSummary = () => {
         <Typography>SubTotal</Typography>
       </Grid>
       <Grid item xs={6} display="flex" justifyContent="flex-end">
-        <Typography>{currency.format(subTotal)}</Typography>
+        <Typography>{currency.format(summaryValues.subTotal)}</Typography>
       </Grid>
 
       <Grid item xs={6}>
@@ -30,7 +44,7 @@ export const OrderSummary = () => {
         </Typography>
       </Grid>
       <Grid item xs={6} display="flex" justifyContent="flex-end">
-        <Typography>{currency.format(tax)}</Typography>
+        <Typography>{currency.format(summaryValues.tax)}</Typography>
       </Grid>
 
       <Grid item xs={6} sx={{ mt: 2 }}>
@@ -38,7 +52,7 @@ export const OrderSummary = () => {
       </Grid>
       <Grid item xs={6} display="flex" justifyContent="flex-end" sx={{ mt: 2 }}>
         <Typography variant="subtitle1">
-          <strong>{currency.format(total)}</strong>
+          <strong>{currency.format(summaryValues.total)}</strong>
         </Typography>
       </Grid>
     </Grid>

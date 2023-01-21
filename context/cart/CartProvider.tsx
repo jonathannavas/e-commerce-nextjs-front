@@ -1,5 +1,6 @@
+import axios from 'axios'
 import { default as Cookie } from 'js-cookie'
-import { FC, PropsWithChildren, useEffect, useReducer } from 'react'
+import { FC, PropsWithChildren, useEffect, useMemo, useReducer } from 'react'
 import { tesloApi } from '../../api'
 import { ICartProduct, IOrder, ShippingAddress } from '../../interfaces'
 import { CartContext, cartReducer } from './'
@@ -135,7 +136,10 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
     dispatch({ type: '[Cart] - Update Address', payload: address })
   }
 
-  const createOrder = async () => {
+  const createOrder = async (): Promise<{
+    hasError: boolean
+    message: string
+  }> => {
     if (!state.shippingAddress) {
       throw new Error('Agregar dirección de la entrega')
     }
@@ -152,26 +156,43 @@ export const CartProvider: FC<PropsWithChildren> = ({ children }) => {
       isPaid: false,
     }
     try {
-      const { data } = await tesloApi.post('/orders', body)
-      console.log({ data })
+      const { data } = await tesloApi.post<IOrder>('/orders', body)
+      setTimeout(() => {
+        dispatch({ type: '[Cart] - Order Complete' })
+      }, 300)
+
+      return {
+        hasError: false,
+        message: data._id!,
+      }
     } catch (error) {
-      console.log(error)
+      if (axios.isAxiosError(error)) {
+        const { message } = error.response?.data.message as { message: string }
+        return {
+          hasError: true,
+          message,
+        }
+      }
+      return {
+        hasError: true,
+        message: 'Error no  controlado hable con el administrador',
+      }
     }
   }
 
-  return (
-    <CartContext.Provider
-      value={{
-        ...state,
+  const memoValues = useMemo(
+    () => ({
+      ...state,
+      addProductToCart,
+      updateCartProductQuantity,
+      removeCartProduct,
+      updateAddress,
+      createOrder,
+    }),
+    [state]
+  )
 
-        addProductToCart,
-        updateCartProductQuantity,
-        removeCartProduct,
-        updateAddress,
-        createOrder,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
+  return (
+    <CartContext.Provider value={memoValues}>{children}</CartContext.Provider>
   )
 }

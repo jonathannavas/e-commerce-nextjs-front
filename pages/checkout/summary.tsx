@@ -61,7 +61,9 @@ const SummaryPage = () => {
       setErrorMessage(message)
       return
     }
-    router.replace(`/orders/${message}`)
+    setTimeout(() => {
+      router.replace(`/orders/${message}`)
+    }, 500)
   }
 
   return (

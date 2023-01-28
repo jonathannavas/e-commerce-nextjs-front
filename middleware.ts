@@ -5,7 +5,7 @@ import { getToken } from 'next-auth/jwt'
 export async function middleware(req: NextRequest | any, ev: NextFetchEvent) {
   const previousPage = req.nextUrl.pathname
 
-  const session = await getToken({
+  const session: any = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET,
   })
@@ -14,29 +14,20 @@ export async function middleware(req: NextRequest | any, ev: NextFetchEvent) {
       new URL(`/auth/login?p=${previousPage}`, req.url)
     )
   }
-  return NextResponse.next()
 
-  // normal auth
-  // const previousPage = request.nextUrl.pathname
-  // if (
-  //   request.nextUrl.pathname.startsWith('/checkout/address') ||
-  //   request.nextUrl.pathname.startsWith('/checkout/summary')
-  // ) {
-  //   const token = request.cookies.get('token')?.value || ''
-  //   try {
-  //     await jose.jwtVerify(
-  //       token,
-  //       new TextEncoder().encode(process.env.JWT_SECRET_SEED)
-  //     )
-  //     return NextResponse.next()
-  //   } catch (error) {
-  //     return NextResponse.redirect(
-  //       new URL(`/auth/login?p=${previousPage}`, request.url)
-  //     )
-  //   }
-  // }
+  const validRoles = ['admin', 'super-user', 'seo']
+
+  if (!validRoles.includes(session.user.role)) {
+    return NextResponse.redirect(new URL(`/`, req.url))
+  }
+
+  return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/checkout/:path*'],
+  matcher: [
+    '/checkout/:path*',
+    '/admin/:path*',
+    // '/api/admin/:path*'
+  ],
 }

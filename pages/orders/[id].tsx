@@ -20,7 +20,7 @@ import { GetServerSideProps, NextPage } from 'next'
 import { getSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import tesloApi from '../../api/tesloApi'
+import tesloApi from '../../axiosApi/tesloApi'
 import { dbOrders } from '../../database'
 import { IOrder } from '../../interfaces/order'
 

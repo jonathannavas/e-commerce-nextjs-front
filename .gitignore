@@ -11,6 +11,8 @@
 # quitar configuraciones de mongo
 mongo/
 .env
+.env.development
+.env.production
 
 # next.js
 /.next/

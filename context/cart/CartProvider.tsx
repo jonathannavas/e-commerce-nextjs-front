@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { default as Cookie } from 'js-cookie'
 import { FC, PropsWithChildren, useEffect, useMemo, useReducer } from 'react'
-import { tesloApi } from '../../api'
+import { tesloApi } from '../../axiosApi'
 import { ICartProduct, IOrder, ShippingAddress } from '../../interfaces'
 import { CartContext, cartReducer } from './'
 
